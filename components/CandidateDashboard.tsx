@@ -83,7 +83,9 @@ const CandidateDashboard = () => {
   return (
     <div className="container my-12 mx-auto px-4 md:px-12">
       <div className="my-1 px-1 w-full flex flex-col sm:flex-row grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-        {candidates.map((candidate) => CandidateItem(candidate))}
+        {candidates.map((candidate, index) => (
+          <div key={index}> {CandidateItem(candidate)} </div>
+        ))}
       </div>
     </div>
   );
