@@ -58,6 +58,18 @@ const CandidateItem = (data: Candidate) => {
           </span>
         ))}
       </div>
+      {data.Projects ? (
+        <div className="px-6 pt-4 pb-2 text-center">
+          {data.Projects.projects.map((project, index) => (
+            <Link href={project}>
+              <a target="_blank">
+                {" "}
+                {project} # {index}
+              </a>
+            </Link>
+          ))}
+        </div>
+      ) : null}
     </div>
   );
 };

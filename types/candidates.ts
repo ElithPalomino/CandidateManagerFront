@@ -7,4 +7,5 @@ export interface Candidate {
   Experience: string;
   Technologies: { technologies: [] };
   Github: string;
+  Projects: { projects: [] };
 }
