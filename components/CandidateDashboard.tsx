@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
 
-let baseUrl = "https://candidate-manager-api-prod.herokuapp.com/api/candidates";
+let baseUrl = "http://localhost:1337/api/candidates";
 
 const filesUrl =
   "https://21799681.fs1.hubspotusercontent-na1.net/hubfs/21799681/";
@@ -59,12 +59,15 @@ const CandidateItem = (data: Candidate) => {
         ))}
       </div>
       {data.Projects ? (
-        <div className="px-6 pt-4 pb-2 text-center">
+        <div className="px-6 pb-4 text-center">
+          <h1 className="pb-3 font-bold text-md">Projects</h1>
           {data.Projects.projects.map((project, index) => (
-            <Link href={project}>
-              <a target="_blank">
-                {" "}
-                {project} # {index}
+            <Link href={project} key={index}>
+              <a target="_blank" className="p-2">
+                🏆{" "}
+                <span className="underline text-sky-500	">
+                  Project #{index + 1}
+                </span>
               </a>
             </Link>
           ))}
@@ -80,13 +83,11 @@ const CandidateDashboard = () => {
     useEffect(() => {
       axios.get(baseUrl).then((response) => {
         setCandidate(response.data);
-        console.log(candidates);
       });
     }, []);
   }
   GetCandidates();
   if (candidates != null) {
-    console.log(candidates);
     return (
       <div className="container my-12 mx-auto px-4 md:px-12">
         <div className="my-1 px-1 w-full flex flex-col sm:flex-row grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
