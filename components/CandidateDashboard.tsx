@@ -2,6 +2,7 @@ import { Candidate } from "../types/candidates";
 import Link from "next/link";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { Oval } from "react-loader-spinner";
 
 let baseUrl = "https://candidate-manager-api-prod.herokuapp.com/api/candidates";
 
@@ -61,12 +62,16 @@ const CandidateItem = (data: Candidate) => {
 
 const CandidateDashboard = () => {
   const [candidates, setCandidate] = useState(null);
-  useEffect(() => {
-    axios.get(baseUrl).then((response) => {
-      setCandidate(response.data);
-    });
-  }, []);
-  if (candidates) {
+  function getCandidates() {
+    useEffect(() => {
+      axios.get(baseUrl).then((response) => {
+        setCandidate(response.data);
+        console.log(candidates);
+      });
+    }, []);
+  }
+  getCandidates();
+  if (candidates != null) {
     console.log(candidates);
     return (
       <div className="container my-12 mx-auto px-4 md:px-12">
@@ -81,7 +86,7 @@ const CandidateDashboard = () => {
   } else {
     return (
       <div className="w-full flex justify-center">
-        <p>No candidates to show</p>
+        <Oval color="#00BFFF" height={80} width={80} />
       </div>
     );
   }
