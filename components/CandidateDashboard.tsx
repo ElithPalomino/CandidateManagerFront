@@ -62,7 +62,7 @@ const CandidateItem = (data: Candidate) => {
 
 const CandidateDashboard = () => {
   const [candidates, setCandidate] = useState(null);
-  function getCandidates() {
+  function GetCandidates() {
     useEffect(() => {
       axios.get(baseUrl).then((response) => {
         setCandidate(response.data);
@@ -70,7 +70,7 @@ const CandidateDashboard = () => {
       });
     }, []);
   }
-  getCandidates();
+  GetCandidates();
   if (candidates != null) {
     console.log(candidates);
     return (
