@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
 
-let baseUrl = "http://localhost:1337/api/candidates";
+let baseUrl = "https://candidate-manager-api-prod.herokuapp.com/api/candidates";
 
 const filesUrl =
   "https://21799681.fs1.hubspotusercontent-na1.net/hubfs/21799681/";
