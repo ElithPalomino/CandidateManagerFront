@@ -3,34 +3,42 @@ import Link from "next/link";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
+import Chip from "@mui/material/Chip";
 
 let baseUrl = "https://candidate-manager-api-prod.herokuapp.com/api/candidates";
 
-const filesUrl =
-  "https://21799681.fs1.hubspotusercontent-na1.net/hubfs/21799681/";
+const filesUrl = "https://uploads-ssl.webflow.com/632f8ffbe23912c85fcf6ac0/";
 const githubUrl = "https://github.com/";
 
 const CandidateItem = (data: Candidate) => {
   return (
     <div className="overflow-hidden rounded-lg shadow-lg m-3">
-      <div className="flex justify-center">
+      <div className="flex justify-center pt-4">
         <img
-          className="w-1/2"
+          className="w-1/3 rounded-full"
           src={`${filesUrl}${data.Picture}`}
-          alt="Sunset in the mountains"
+          alt="Profile Picture"
         />
       </div>
       <div className="px-6 pt-4 text-center">
-        <div className="font-bold text-xl mb-2">{data.FirstName}</div>
-        <div className="flex text-center justify-center">
-          <div className="text-l mb-2 mr-2">📍 {data.Location}</div>
-          <div className="text-l mb-2">🇺🇸 {data.English}</div>
+        <div className="font-bold text-base md:text-lg md:text-l mb-2">
+          {data.FirstName}
         </div>
-        <div className="text-md mb-2 flext">
+        <div className="flex text-center justify-center">
+          <div className="text-sm md:text-base mb-2 mr-2">
+            📍 {data.Location}
+          </div>
+        </div>
+        <div className="text-xs md:text-base mb-2 flext">
+          <div className="text-xs md:text-lg mb-2 no-underline text-blue-800">
+            <a href={data.Interview} target="blank">
+              Watch {data.FirstName}'s interview
+            </a>
+          </div>
           {data.Experience} years of experience
         </div>
         {data.Github ? (
-          <div className="text-md mb-2 flex justify-center">
+          <div className="text-2xs md:text-sm mb-2 flex justify-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               x="0px"
@@ -51,10 +59,11 @@ const CandidateItem = (data: Candidate) => {
         <p className="text-gray-700 text-base"></p>
       </div>
       <div className="px-6 pt-4 pb-2 text-center">
+        <p className="font-bold mb-4">Skills</p>
         {data.Technologies.technologies.map((technology, index) => (
           <span
             key={index}
-            className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2"
+            className="inline-block bg-gray-200 rounded-full px-3 py-1 text-xs md:text-sm font-semibold text-gray-700 mr-2 mb-2"
           >
             {technology}
           </span>
@@ -80,7 +89,40 @@ const CandidateItem = (data: Candidate) => {
 };
 
 const CandidateDashboard = () => {
+  const tagsFilters = [
+    "React",
+    "Bootstrap",
+    "TypeScript",
+    "CSS",
+    "Less",
+    "C#",
+    "C++",
+    "Python",
+    "Ruby",
+    "PHP",
+    "Swift",
+    "Go",
+    "Kotlin",
+    "Rust",
+    "Scala",
+    "Dart",
+    "Elixir",
+  ];
+
+  let [isAllTag, setIsAllTag] = useState(true);
+  let [tags, setTags] = useState([]);
+  let [searchTerm, setSearchTerm] = useState("");
   const [candidates, setCandidate] = useState(null);
+  function GetTags() {
+    useEffect(() => {
+      if (tags.length > 0) {
+        setIsAllTag(false);
+      } else {
+        setIsAllTag(true);
+      }
+    }, [tags]);
+  }
+
   function GetCandidates() {
     useEffect(() => {
       axios.get(baseUrl).then((response) => {
@@ -88,16 +130,99 @@ const CandidateDashboard = () => {
       });
     }, []);
   }
+
+  const FilteredCandidates = (candidates) => {
+    return candidates.data
+      .filter((candidate) => {
+        if (searchTerm == "") {
+          return candidate;
+        } else if (
+          candidate.attributes.Technologies.technologies
+            .toString()
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
+        ) {
+          return candidate;
+        }
+      })
+      .filter((candidate) => {
+        if (
+          !isAllTag &&
+          tags.every((tag) =>
+            candidate.attributes.Technologies.technologies.includes(tag)
+          )
+        ) {
+          return candidate;
+        } else if (isAllTag) {
+          return candidate;
+        } else {
+          return null;
+        }
+      })
+      .map((candidate, index) => (
+        <div key={index}> {CandidateItem(candidate.attributes)} </div>
+      ));
+  };
+
+  GetTags();
   GetCandidates();
   if (candidates != null) {
     return (
       <div className="container my-12 mx-auto px-4 md:px-12">
-        <div className="my-1 px-1 w-full flex flex-col sm:flex-row grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {candidates.data.map((candidate, index) => (
-            <div key={index}> {CandidateItem(candidate.attributes)} </div>
-          ))}
-          {candidates.data.attributes}
+        <div className="flex justify-center mb-5">
+          <h1 className="text-[28px] md:text-[32px]">Candidate finder</h1>
         </div>
+        <div className="flex justify-center mb-5">
+          <div className="bg-gray-100 flex rounded-lg">
+            <img
+              className="w-[15px] h-[15px] ml-2 mt-2"
+              src="https://cdn-icons-png.flaticon.com/512/49/49116.png"
+              id="input_img"
+            />
+            <input
+              className="bg-gray-100 text-black rounded-lg pl-2 py-1 active:border-0"
+              type="text"
+              placeholder="Search skills..."
+              onChange={(event) => setSearchTerm(event.target.value)}
+            />
+          </div>
+        </div>
+        <div>
+          <Chip
+            onClick={() => {
+              setTags([]), setIsAllTag(true);
+            }}
+            variant="outlined"
+            label="All"
+            color={!isAllTag ? "default" : "secondary"}
+          />
+          {tagsFilters.map((tag, index) => (
+            <Chip
+              onClick={() => {
+                if (!tags.includes(tag)) {
+                  setTags([...tags, tag]);
+                } else {
+                  const selectedTags = [...tags].filter(
+                    (selectedTag) => selectedTag !== tag
+                  );
+                  setTags(selectedTags);
+                }
+              }}
+              className="!mx-2 !mb-1"
+              key={index}
+              label={tag}
+              color={tags.includes(tag) ? "secondary" : "default"}
+            />
+          ))}
+        </div>
+        <div className="my-1 px-1 w-full flex-col sm:flex-row grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          {FilteredCandidates(candidates)}
+        </div>
+        {FilteredCandidates(candidates).length == 0 ? (
+          <div>
+            <h1 className="text-center text-2xl mt-5">No Candidates Found</h1>
+          </div>
+        ) : null}
       </div>
     );
   } else {
