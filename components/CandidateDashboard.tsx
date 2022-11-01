@@ -7,7 +7,7 @@ import Chip from "@mui/material/Chip";
 
 let baseUrl = "https://candidate-manager-api-prod.herokuapp.com/api/candidates";
 
-const filesUrl = "https://uploads-ssl.webflow.com/632f8ffbe23912c85fcf6ac0/";
+const filesUrl = "https://uploads-ssl.webflow.com/6233cae7619b3d59f7365a14/";
 const githubUrl = "https://github.com/";
 
 const CandidateItem = (data: Candidate) => {
@@ -168,7 +168,7 @@ const CandidateDashboard = () => {
   GetCandidates();
   if (candidates != null) {
     return (
-      <div className="container my-12 mx-auto px-4 md:px-12">
+      <div className="container my-5 mx-auto px-4 md:px-12">
         <div className="flex justify-center mb-5">
           <h1 className="text-[28px] md:text-[32px]">Candidate finder</h1>
         </div>
@@ -194,7 +194,7 @@ const CandidateDashboard = () => {
             }}
             variant="outlined"
             label="All"
-            color={!isAllTag ? "default" : "secondary"}
+            color={!isAllTag ? "default" : "primary"}
           />
           {tagsFilters.map((tag, index) => (
             <Chip
@@ -211,7 +211,7 @@ const CandidateDashboard = () => {
               className="!mx-2 !mb-1"
               key={index}
               label={tag}
-              color={tags.includes(tag) ? "secondary" : "default"}
+              color={tags.includes(tag) ? "primary" : "default"}
             />
           ))}
         </div>
