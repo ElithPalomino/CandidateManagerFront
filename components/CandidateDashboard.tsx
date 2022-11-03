@@ -31,9 +31,11 @@ const CandidateItem = (data: Candidate) => {
         </div>
         <div className="text-xs md:text-base mb-2 flext">
           <div className="text-xs md:text-lg mb-2 no-underline text-blue-800">
-            <a href={data.Interview} target="blank">
-              Watch {data.FirstName}'s interview
-            </a>
+            {data.Interview ? (
+              <a href={data.Interview} target="blank">
+                Watch {data.FirstName}'s interview
+              </a>
+            ) : null}
           </div>
           {data.Experience} years of experience
         </div>
@@ -91,22 +93,13 @@ const CandidateItem = (data: Candidate) => {
 const CandidateDashboard = () => {
   const tagsFilters = [
     "React",
+    "React Native",
     "Bootstrap",
-    "TypeScript",
     "CSS",
-    "Less",
-    "C#",
-    "C++",
+    "TypeScript",
     "Python",
-    "Ruby",
-    "PHP",
-    "Swift",
-    "Go",
+    "Ruby on Rails",
     "Kotlin",
-    "Rust",
-    "Scala",
-    "Dart",
-    "Elixir",
   ];
 
   let [isAllTag, setIsAllTag] = useState(true);
