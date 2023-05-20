@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
 import Chip from "@mui/material/Chip";
 
-let baseUrl = "https://candidate-manager-api-prod.herokuapp.com/api/candidates";
+let baseUrl = "https://candidate-backend.herokuapp.com/api/candidates";
 
-const filesUrl = "https://uploads-ssl.webflow.com/6233cae7619b3d59f7365a14/";
+const filesUrl = "https://uploads-ssl.webflow.com/639caaf7a5013a75ff0a6116/";
 
 const CandidateItem = (data: Candidate) => {
   return (
@@ -21,7 +21,7 @@ const CandidateItem = (data: Candidate) => {
       </div>
       <div className="px-6 pt-4 text-center">
         <div className="font-bold text-base md:text-lg md:text-l mb-2">
-          {data.FirstName}
+          {data?.FirstName}
         </div>
         <div className="flex text-center justify-center">
           <div className="text-sm md:text-base mb-2 mr-2">
@@ -68,7 +68,7 @@ const CandidateItem = (data: Candidate) => {
       </div>
       <div className="px-6 pt-4 pb-2 text-center">
         <p className="font-bold mb-4">Skills</p>
-        {data.Technologies.technologies.map((technology, index) => (
+        {data?.Technologies?.technologies.map((technology, index) => (
           <span
             key={index}
             className="inline-block bg-gray-200 rounded-full px-3 py-1 text-xs md:text-sm font-semibold text-gray-700 mr-2 mb-2"
@@ -146,7 +146,7 @@ const CandidateDashboard = () => {
         if (
           !isAllTag &&
           tags.every((tag) =>
-            candidate.attributes.Technologies.technologies.includes(tag)
+            candidate.attributes.Technologies?.technologies.includes(tag)
           )
         ) {
           return candidate;
