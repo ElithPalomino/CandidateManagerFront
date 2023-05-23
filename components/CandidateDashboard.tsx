@@ -6,6 +6,8 @@ import { Oval } from "react-loader-spinner";
 import Chip from "@mui/material/Chip";
 
 let baseUrl = "https://avvy-candidate-manager-api.herokuapp.com/api/candidates";
+let technologiesUrl =
+  "https://avvy-candidate-manager-api.herokuapp.com/api/technologies";
 
 const filesUrl = "https://uploads-ssl.webflow.com/639caaf7a5013a75ff0a6116/";
 
@@ -97,14 +99,7 @@ const CandidateItem = (data: Candidate) => {
 };
 
 const CandidateDashboard = () => {
-  const tagsFilters = [
-    "React",
-    "React Native",
-    "SQA",
-    ".NET",
-    "PHP",
-    "Ruby on Rails",
-  ];
+  const [tagsFilters, setTagFilters] = useState([]);
 
   let [isAllTag, setIsAllTag] = useState(true);
   let [tags, setTags] = useState([]);
@@ -124,6 +119,14 @@ const CandidateDashboard = () => {
     useEffect(() => {
       axios.get(baseUrl).then((response) => {
         setCandidate(response.data);
+      });
+    }, []);
+  }
+
+  function getTagsStrapi() {
+    useEffect(() => {
+      axios.get(technologiesUrl).then((response) => {
+        setTagFilters(response.data.map((tag) => tag.name));
       });
     }, []);
   }
