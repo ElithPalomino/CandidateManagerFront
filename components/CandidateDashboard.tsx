@@ -126,7 +126,7 @@ const CandidateDashboard = () => {
   function getTagsStrapi() {
     useEffect(() => {
       axios.get(technologiesUrl).then((response) => {
-        setTagFilters(response.data.map((tag) => tag.name));
+        setTagFilters(response?.data?.data?.map((tag) => tag.attributes.Name));
       });
     }, []);
   }
@@ -164,6 +164,7 @@ const CandidateDashboard = () => {
       ));
   };
 
+  getTagsStrapi();
   GetTags();
   GetCandidates();
   if (candidates != null) {
