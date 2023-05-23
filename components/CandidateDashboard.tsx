@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
 import Chip from "@mui/material/Chip";
 
-let baseUrl = "https://candidate-backend.herokuapp.com/api/candidates";
+let baseUrl = "https://avvy-candidate-manager-api.herokuapp.com/api/candidates";
 
 const filesUrl = "https://uploads-ssl.webflow.com/639caaf7a5013a75ff0a6116/";
 
