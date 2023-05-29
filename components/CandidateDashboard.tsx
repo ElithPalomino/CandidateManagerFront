@@ -5,47 +5,55 @@ import { useEffect, useState } from "react";
 import { Oval } from "react-loader-spinner";
 import Chip from "@mui/material/Chip";
 
-const filesUrl = "https://uploads-ssl.webflow.com/639caaf7a5013a75ff0a6116/";
-
-const CandidateItem = (data: Candidate) => {
+const CandidateItem = (data: Candidate, tags, setTags) => {
   return (
-    <div className="overflow-hidden rounded-lg shadow-lg m-3 ">
+    <div className="overflow-hidden rounded-lg shadow-lg m-1 md:h-[500px] px-3 lg:px-6">
       <div className="flex justify-center pt-4">
-        {data.Image ? (
+        {data?.Image?.data ? (
           <img
             className="w-1/3 rounded-full"
-            src={`http://localhost:1337${data?.Image?.data?.attributes.url}`}
+            src={data?.Image?.data?.attributes.url}
             alt="Profile Picture"
           />
         ) : (
           <img
             className="w-1/3 rounded-full"
-            src={`${filesUrl}${data?.Picture}`}
+            src={data?.Picture}
             alt="Profile Picture"
           />
         )}
       </div>
-      <div className="px-6 pt-4 text-center">
-        <div className="font-bold text-base md:text-lg md:text-l mb-2">
+      <div className="pt-2 lg:pt-4 text-center">
+        <div className="font-bold text-sm md:text-lg mb-1 lg:mb-2">
           {data?.FirstName}
         </div>
         <div className="flex text-center justify-center">
-          <div className="text-sm md:text-base mb-2 mr-2">
-            📍 {data.Location}
-          </div>
+          <div className="text-xs md:text-base lg:mb-2">📍 {data.Location}</div>
         </div>
-        <div className="text-xs md:text-base mb-2 flext">
-          <div className="text-xs md:text-base mb-2 no-underline text-blue-800">
+        <p className="my-1 text-center text-xs md:text-base">
+          {data?.CV?.data?.attributes.url && (
+            <a target="_blank" href={data.CV.data.attributes.url}>
+              Download CV
+            </a>
+          )}
+        </p>
+        <div className="text-xs md:text-base">
+          <div className="text-xs md:text-base no-underline text-blue-800">
             {data.Interview ? (
               <a href={data.Interview} target="blank">
-                Watch {data.FirstName}'s 1 minute <br /> video introduction
+                <span className="hidden lg:block">
+                  Watch {data.FirstName}'s 1 minute <br /> video introduction
+                </span>
+                <span className="block lg:hidden">Video introduction</span>
               </a>
             ) : null}
           </div>
-          {data.Experience}
+        </div>
+        <div className="text-center">
+          <p className="m-0 text-xs md:text-base">{data.Experience}</p>
         </div>
         {data.Github ? (
-          <div className="text-2xs md:text-sm mb-2 flex justify-center">
+          <div className="text-xs md:text-sm my-1 lg:my-2 flex justify-center items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               x="0px"
@@ -64,49 +72,79 @@ const CandidateItem = (data: Candidate) => {
           </div>
         ) : null}
         {data.Portfolio ? (
-          <div className="text-2xs md:text-sm mb-2 flex justify-center">
+          <div className="text-xs md:text-sm mb-2 flex justify-center item">
             <Link href={`${data.Portfolio}`}>
-              <a target="_blank"> 💼 Portfolio</a>
+              <a target="_blank" className="flex justify-center">
+                💼 <span className="mt-[4px] ml-[4px]">Portfolio</span>
+              </a>
             </Link>
           </div>
         ) : null}
-        <p className="text-gray-700 text-base"></p>
       </div>
-      <div className="px-6 pt-4 pb-2 text-center">
-        <p className="font-bold mb-4">Skills</p>
-        {
-          // @ts-ignore
-          data?.technologiesNew?.data.map((technology, index) => (
-            <span
-              key={index}
-              className="inline-block bg-gray-200 rounded-full px-3 py-1 text-xs md:text-sm font-semibold text-gray-700 mr-2 mb-2"
-            >
-              {technology.attributes.Name}
-            </span>
-          ))
-        }
-      </div>
-      {data.Projects ? (
-        <div className="px-6 pb-4 text-center">
-          <h1 className="pb-3 font-bold text-md">Projects</h1>
-          {data.Projects.projects.map((project, index) => (
-            <Link href={project} key={index}>
-              <a target="_blank" className="p-2">
-                🏆{" "}
-                <span className="underline text-sky-500	">
-                  Project #{index + 1}
+      <div className="pt-1 lg:py-2 text-center">
+        <p className="font-bold mb-2 lg:mb-4 text-sm lg:text-base">Skills</p>
+        {data?.technologiesNew?.data.length ? (
+          <div className="">
+            {data?.technologiesNew?.data
+              .filter((technology, i) => i < 5)
+              .map((technology, index) => (
+                <span
+                  onClick={() => {
+                    if (!tags.includes(technology.attributes.Name)) {
+                      setTags([...tags, technology.attributes.Name]);
+                    } else {
+                      const selectedTags = [...tags].filter(
+                        (selectedTag) =>
+                          selectedTag !== technology.attributes.Name
+                      );
+                      setTags(selectedTags);
+                    }
+                  }}
+                  key={index}
+                  className={` ${
+                    tags.includes(technology.attributes.Name)
+                      ? "bg-[#1976D2] text-white"
+                      : "bg-gray-200 text-ay-700"
+                  } rounded-full px-3 py-1 text-[10px] md:text-sm front-semibold mr-2 mb-2 inline-block justify-center items-center`}
+                >
+                  {technology.attributes.Name}
                 </span>
-              </a>
-            </Link>
-          ))}
-        </div>
-      ) : null}
+              ))}
+          </div>
+        ) : (
+          <div>
+            {data?.Technologies?.technologies
+              .filter((technology, i) => i < 5)
+              .map((technology, index) => (
+                <span
+                  onClick={() => {
+                    if (!tags.includes(technology)) {
+                      setTags([...tags, technology]);
+                    } else {
+                      const selectedTags = [...tags].filter(
+                        (selectedTag) => selectedTag !== technology
+                      );
+                      setTags(selectedTags);
+                    }
+                  }}
+                  key={index}
+                  className={`${
+                    tags.includes(technology)
+                      ? "bg-[#1976D2] text-white"
+                      : "bg-gray-200 text-ay-700"
+                  } rounded-full px-3 py-1 text-[10px] md:text-sm front-semibold mr-2 mb-2 inline-block justify-center items-center`}
+                >
+                  {technology}
+                </span>
+              ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
 
 const CandidateDashboard = () => {
-  const [tagsFilters, setTagFilters] = useState([]);
   const [isAllTag, setIsAllTag] = useState(true);
   const [tags, setTags] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -118,15 +156,7 @@ const CandidateDashboard = () => {
     try {
       const response = await axios.get("/api/candidates");
       setCandidates(response.data);
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  async function fetchTechnologies() {
-    try {
-      const response = await axios.get("/api/technologies");
-      setTagFilters(response.data);
+      console.log(response.data);
     } catch (err) {
       console.error(err);
     }
@@ -136,19 +166,10 @@ const CandidateDashboard = () => {
     try {
       const response = await axios.get("/api/categories");
       setCategories(response.data);
-      console.log(response.data);
     } catch (err) {
       console.error(err);
     }
   }
-
-  useEffect(() => {
-    if (tags.length > 0) {
-      setIsAllTag(false);
-    } else {
-      setIsAllTag(true);
-    }
-  }, [tags]);
 
   useEffect(() => {
     if (tags.length > 0) {
@@ -160,7 +181,6 @@ const CandidateDashboard = () => {
 
   useEffect(() => {
     fetchCandidates();
-    fetchTechnologies();
     fetchCategories();
   }, []);
 
@@ -205,7 +225,10 @@ const CandidateDashboard = () => {
         }
       })
       .map((candidate, index) => (
-        <div key={index}> {CandidateItem(candidate.attributes)} </div>
+        <div key={index}>
+          {" "}
+          {CandidateItem(candidate.attributes, tags, setTags)}{" "}
+        </div>
       ));
   };
 
@@ -213,7 +236,7 @@ const CandidateDashboard = () => {
     return (
       <div className="container my-5 mx-auto px-4 md:px-12">
         <div className="flex justify-center mb-5">
-          <h1 className="text-[28px] md:text-[32px]">Candidate finder</h1>
+          <h1 className="text-[28px] md:text-[32px]">Candidate Catalog</h1>
         </div>
         <div className="flex justify-center mb-5">
           <div className="bg-gray-100 flex rounded-lg">
@@ -230,7 +253,7 @@ const CandidateDashboard = () => {
             />
           </div>
         </div>
-        <div className="flex">
+        <div className="flex max-w-full">
           <div className="mr-5">
             <Chip
               onClick={() => {
@@ -242,63 +265,68 @@ const CandidateDashboard = () => {
             />
           </div>
           <div>
-            {categories.map((category, index) => {
-              const children = category.attributes.technologies.data.map(
-                (technology, index) => {
-                  const tag = technology.attributes.Name;
-                  return (
+            <div className="max-w-full">
+              {categories.map((category, index) => {
+                const children = category.attributes.technologies.data.map(
+                  (technology, index) => {
+                    const tag = technology.attributes.Name;
+                    return (
+                      <Chip
+                        onClick={() => {
+                          if (!tags.includes(tag)) {
+                            setTags([...tags, tag]);
+                          } else {
+                            const selectedTags = [...tags].filter(
+                              (selectedTag) => selectedTag !== tag
+                            );
+                            setTags(selectedTags);
+                          }
+                        }}
+                        className="!mx-2 !mb-1"
+                        key={index}
+                        label={tag}
+                        color={tags.includes(tag) ? "primary" : "default"}
+                      />
+                    );
+                  }
+                );
+                const categoryTag = category.attributes.Category;
+                return (
+                  <div key={index} className="flex mb-2">
                     <Chip
                       onClick={() => {
-                        if (!tags.includes(tag)) {
-                          setTags([...tags, tag]);
+                        if (!selectedCategories.includes(categoryTag)) {
+                          setSelectedCategories([
+                            ...selectedCategories,
+                            categoryTag,
+                          ]);
                         } else {
-                          const selectedTags = [...tags].filter(
-                            (selectedTag) => selectedTag !== tag
+                          const currentSelectedCategories = [
+                            ...selectedCategories,
+                          ].filter(
+                            (selectedCategory) =>
+                              selectedCategory !== categoryTag
                           );
-                          setTags(selectedTags);
+                          setSelectedCategories(currentSelectedCategories);
                         }
                       }}
-                      className="!mx-2 !mb-1"
-                      key={index}
-                      label={tag}
-                      color={tags.includes(tag) ? "primary" : "default"}
-                    />
-                  );
-                }
-              );
-              const categoryTag = category.attributes.Category;
-              return (
-                <div key={index} className="flex mb-2">
-                  <Chip
-                    onClick={() => {
-                      if (!selectedCategories.includes(categoryTag)) {
-                        setSelectedCategories([
-                          ...selectedCategories,
-                          categoryTag,
-                        ]);
-                      } else {
-                        const currentSelectedCategories = [
-                          ...selectedCategories,
-                        ].filter(
-                          (selectedCategory) => selectedCategory !== categoryTag
-                        );
-                        setSelectedCategories(currentSelectedCategories);
+                      label={categoryTag}
+                      color={
+                        selectedCategories.includes(categoryTag)
+                          ? "primary"
+                          : "default"
                       }
-                    }}
-                    label={categoryTag}
-                    color={
-                      selectedCategories.includes(categoryTag)
-                        ? "primary"
-                        : "default"
-                    }
-                  />
-                  {selectedCategories.includes(categoryTag) && children}
-                </div>
-              );
-            })}
+                    />
+                    <div className="grid grid-cols-2 sm:grid-cols-3">
+                      {selectedCategories.includes(categoryTag) && children}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
-        <div className="my-1 px-1 w-full flex-col sm:flex-row grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        <div className="my-1 px-1 w-full flex-col sm:flex-row grid grid-cols-2 lg:grid-cols-3">
           {FilteredCandidates(candidates)}
         </div>
         {FilteredCandidates(candidates).length == 0 ? (
